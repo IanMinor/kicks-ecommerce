@@ -1,0 +1,5 @@
+/* Forzar separación entre botones de paginación HeroUI */
+.heroui-pagination > * {
+  margin-left: 6px;
+  margin-right: 6px;
+}

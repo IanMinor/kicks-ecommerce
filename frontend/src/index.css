@@ -1,0 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+@import "tailwindcss";
+@import "./pagination-fix.css";
+
+@theme {
+  --font-rubik: "Rubik", sans-serif;
+
+  --color-blue-brand: #4a69e2;
+  --color-yellow-accent: #ffa52f;
+  --color-white-fa: #fafafa;
+  --color-gray-light: #e7e7e3;
+  --color-stone-gray: #70706e;
+  --color-gray-dark: #232321;
+}
