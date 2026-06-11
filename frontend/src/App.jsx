@@ -21,7 +21,7 @@ function withSuspense(element) {
     <Suspense
       fallback={
         <p className="text-gray-500 flex justify-center items-center min-h-[40vh] text-xl font-semibold w-full">
-          Loading...
+          Cargando...
         </p>
       }
     >

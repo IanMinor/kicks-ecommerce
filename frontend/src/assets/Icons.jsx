@@ -50,7 +50,7 @@ export function ShoppingCartIcon() {
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
-      class="lucide lucide-shopping-cart-icon lucide-shopping-cart"
+      className="lucide lucide-shopping-cart-icon lucide-shopping-cart"
     >
       <circle cx="8" cy="21" r="1" />
       <circle cx="19" cy="21" r="1" />
@@ -71,7 +71,7 @@ export function SearchIcon() {
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
-      class="lucide lucide-search-icon lucide-search"
+      className="lucide lucide-search-icon lucide-search"
     >
       <circle cx="11" cy="11" r="8" />
       <path d="m21 21-4.3-4.3" />
@@ -91,7 +91,7 @@ export function UserIcon() {
       stroke-width="2"
       stroke-linecap="round"
       stroke-linejoin="round"
-      class="lucide lucide-user-icon lucide-user"
+      className="lucide lucide-user-icon lucide-user"
     >
       <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
       <circle cx="12" cy="7" r="4" />

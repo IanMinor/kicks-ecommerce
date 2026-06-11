@@ -3,6 +3,7 @@ import ProductCard from "../components/ProductCard";
 import ProductFilters from "../components/ProductFilters";
 import { useFilteredPaginatedProducts } from "../hooks/useFilteredPaginatedProducts";
 import { Pagination } from "@heroui/pagination";
+import { ProductCardSkeleton } from "../components/Skeleton";
 
 function Products() {
   const [page, setPage] = useState(1);
@@ -17,7 +18,15 @@ function Products() {
   };
 
   if (loading)
-    return <p className="text-center mt-10">Cargando productos...</p>;
+    return (
+      <div className="w-[90%] mx-auto mt-6">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] justify-items-center mt-8 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <ProductCardSkeleton key={i} />
+          ))}
+        </div>
+      </div>
+    );
   if (error) return <p className="text-center text-red-500 mt-10">{error}</p>;
 
   return (

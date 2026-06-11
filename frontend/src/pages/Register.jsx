@@ -5,13 +5,14 @@ import ErrorMessage from "../components/ErrorMessage";
 import { registerUser } from "../utils/authApi";
 import { useState } from "react";
 import SuccessModal from "../components/SuccessModal";
+import { motion } from "framer-motion";
 
 function Register() {
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     setError,
   } = useForm();
 
@@ -38,188 +39,174 @@ function Register() {
     }
   };
 
+  const inputClass = (hasError) =>
+    `w-full px-4 py-2.5 rounded-lg bg-white-fa border border-gray-light focus:outline-none transition ${
+      hasError
+        ? "ring-2 ring-red-500"
+        : "focus:ring-2 focus:ring-blue-brand focus:border-blue-brand"
+    }`;
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br p-4">
+    <div className="min-h-screen flex items-center justify-center p-4 font-rubik">
       <SuccessModal
         show={showSuccess}
         message="✅ Registro exitoso. ¡Bienvenido!"
       />
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="p-8 rounded-2xl shadow-lg max-w-md w-full  space-y-5"
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full space-y-5"
       >
-        <h2 className="text-3xl font-bold text-center">Create Account</h2>
+        <h2 className="text-3xl font-bold text-center text-gray-dark">Crear cuenta</h2>
         {errors.root && (
           <p className="text-red-500 text-sm">{errors.root.message}</p>
         )}
-        {/* Name */}
-        <div>
-          <label className="block mb-1 font-semibold">
-            Name <span className="text-red-500">*</span>
-          </label>
-          <input
-            {...register("nombre", {
-              required: "Name is required",
-              minLength: {
-                value: 3,
-                message: "Name must be at least 3 characters",
-              },
-              maxLength: {
-                value: 20,
-                message: "Name must be at most 20 characters",
-              },
-            })}
-            className={`w-full px-4 py-2 rounded-lg bg-transparent border-1 border-gray-light focus:outline-none focus:ring-2 ${
-              errors.nombre ? "ring-red-500" : "ring-gray-300"
-            }`}
-            placeholder="Enter your name"
-          />
-          {errors.nombre && <ErrorMessage message={errors.nombre.message} />}
-        </div>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label className="block mb-1 font-medium text-sm">
+              Nombre <span className="text-red-500">*</span>
+            </label>
+            <input
+              {...register("nombre", {
+                required: "El nombre es obligatorio",
+                minLength: { value: 3, message: "Mínimo 3 caracteres" },
+                maxLength: { value: 20, message: "Máximo 20 caracteres" },
+              })}
+              className={inputClass(errors.nombre)}
+              placeholder="Ingresa tu nombre"
+            />
+            {errors.nombre && <ErrorMessage message={errors.nombre.message} />}
+          </div>
 
-        {/* Last Name */}
-        <div>
-          <label className="block mb-1 font-semibold">
-            Last Name <span className="text-red-500">*</span>
-          </label>
-          <input
-            {...register("apellido", {
-              required: "Last name is required",
-              minLength: {
-                value: 3,
-                message: "Last name must be at least 3 characters",
-              },
-              maxLength: {
-                value: 20,
-                message: "Last name must be at most 20 characters",
-              },
-            })}
-            className={`w-full px-4 py-2 rounded-lg bg-transparent border-1 border-gray-light focus:outline-none focus:ring-2 ${
-              errors.apellido ? "ring-red-500" : "ring-gray-300"
-            }`}
-            placeholder="Enter your last name"
-          />
-          {errors.apellido && (
-            <ErrorMessage message={errors.apellido.message} />
-          )}
-        </div>
+          <div>
+            <label className="block mb-1 font-medium text-sm">
+              Apellido <span className="text-red-500">*</span>
+            </label>
+            <input
+              {...register("apellido", {
+                required: "El apellido es obligatorio",
+                minLength: { value: 3, message: "Mínimo 3 caracteres" },
+                maxLength: { value: 20, message: "Máximo 20 caracteres" },
+              })}
+              className={inputClass(errors.apellido)}
+              placeholder="Ingresa tu apellido"
+            />
+            {errors.apellido && <ErrorMessage message={errors.apellido.message} />}
+          </div>
 
-        {/* Phone number */}
-        <div>
-          <label className="block mb-1 font-semibold">
-            Phone Number <span className="text-red-500">*</span>
-          </label>
-          <input
-            {...register("numero_telefono", {
-              required: "Phone number is required",
-              pattern: {
-                value: /^\d{10}$/,
-                message: "Invalid phone number",
-              },
-            })}
-            className={`w-full px-4 py-2 rounded-lg bg-transparent border-1 border-gray-light focus:outline-none focus:ring-2 ${
-              errors.numero_telefono ? "ring-red-500" : "ring-gray-300"
-            }`}
-            placeholder="Enter your phone number"
-          />
-          {errors.numero_telefono && (
-            <ErrorMessage message={errors.numero_telefono.message} />
-          )}
-        </div>
+          <div>
+            <label className="block mb-1 font-medium text-sm">
+              Teléfono <span className="text-red-500">*</span>
+            </label>
+            <input
+              {...register("numero_telefono", {
+                required: "El teléfono es obligatorio",
+                pattern: { value: /^\d{10}$/, message: "10 dígitos requeridos" },
+              })}
+              className={inputClass(errors.numero_telefono)}
+              placeholder="Ingresa tu teléfono"
+            />
+            {errors.numero_telefono && (
+              <ErrorMessage message={errors.numero_telefono.message} />
+            )}
+          </div>
 
-        {/* Email */}
-        <div>
-          <label className="block mb-1 font-semibold">
-            Email <span className="text-red-500">*</span>
-          </label>
-          <input
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                message: "Invalid email address",
-              },
-            })}
-            type="email"
-            className={`w-full px-4 py-2 rounded-lg bg-transparent border-1 border-gray-light focus:outline-none focus:ring-2 ${
-              errors.email ? "ring-red-500" : "ring-gray-300"
-            }`}
-            placeholder="Enter your email"
-          />
-          {errors.email && <ErrorMessage message={errors.email.message} />}
-        </div>
+          <div>
+            <label className="block mb-1 font-medium text-sm">
+              Email <span className="text-red-500">*</span>
+            </label>
+            <input
+              {...register("email", {
+                required: "El email es obligatorio",
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: "Email inválido",
+                },
+              })}
+              type="email"
+              className={inputClass(errors.email)}
+              placeholder="Ingresa tu email"
+            />
+            {errors.email && <ErrorMessage message={errors.email.message} />}
+          </div>
 
-        {/* Password */}
-        <div>
-          <label className="block mb-1 font-semibold">
-            Password <span className="text-red-500">*</span>
-          </label>
-          <input
-            {...register("contraseña", {
-              required: "Password is required",
-              minLength: {
-                value: 4,
-                message: "Password must be at least 4 characters",
-              },
-            })}
-            type="password"
-            className={`w-full px-4 py-2 rounded-lg bg-transparent border-1 border-gray-light focus:outline-none focus:ring-2 ${
-              errors.contraseña ? "ring-red-500" : "ring-gray-300"
-            }`}
-            placeholder="Enter your password"
-          />
-          {errors.contraseña && (
-            <ErrorMessage message={errors.contraseña.message} />
-          )}
-        </div>
+          <div>
+            <label className="block mb-1 font-medium text-sm">
+              Contraseña <span className="text-red-500">*</span>
+            </label>
+            <input
+              {...register("contraseña", {
+                required: "La contraseña es obligatoria",
+                minLength: { value: 4, message: "Mínimo 4 caracteres" },
+              })}
+              type="password"
+              className={inputClass(errors.contraseña)}
+              placeholder="Ingresa tu contraseña"
+            />
+            {errors.contraseña && (
+              <ErrorMessage message={errors.contraseña.message} />
+            )}
+          </div>
 
-        {/* Confirm Password */}
-        <div>
-          <label className="block mb-1 font-semibold">
-            Confirm Password <span className="text-red-500">*</span>
-          </label>
-          <input
-            {...register("confirmPassword", {
-              required: "Please confirm your password",
-              validate: (value) =>
-                value === contraseña || "Passwords must match",
-            })}
-            type="password"
-            className={`w-full px-4 py-2 rounded-lg bg-transparent border-1 border-gray-light focus:outline-none focus:ring-2 ${
-              errors.confirmPassword ? "ring-red-500" : "ring-gray-300"
-            }`}
-            placeholder="Confirm your password"
-          />
-          {errors.confirmPassword && (
-            <ErrorMessage message={errors.confirmPassword.message} />
-          )}
-        </div>
+          <div>
+            <label className="block mb-1 font-medium text-sm">
+              Confirmar contraseña <span className="text-red-500">*</span>
+            </label>
+            <input
+              {...register("confirmPassword", {
+                required: "Confirma tu contraseña",
+                validate: (value) =>
+                  value === contraseña || "Las contraseñas no coinciden",
+              })}
+              type="password"
+              className={inputClass(errors.confirmPassword)}
+              placeholder="Confirma tu contraseña"
+            />
+            {errors.confirmPassword && (
+              <ErrorMessage message={errors.confirmPassword.message} />
+            )}
+          </div>
 
-        {/* Terms */}
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            {...register("terms", {
-              required: "You must accept the terms and conditions",
-            })}
-          />
-          <label className="text-sm">
-            I agree to the{" "}
-            <span className="underline cursor-pointer">
-              terms and conditions
-            </span>
-          </label>
-        </div>
-        {errors.terms && <ErrorMessage message={errors.terms.message} />}
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              {...register("terms", {
+                required: "Debes aceptar los términos y condiciones",
+              })}
+              className="w-4 h-4 accent-blue-brand"
+            />
+            <label className="text-sm">
+              Acepto los{" "}
+              <span className="underline cursor-pointer text-blue-brand">
+                términos y condiciones
+              </span>
+            </label>
+          </div>
+          {errors.terms && <ErrorMessage message={errors.terms.message} />}
 
-        {/* Button */}
-        <button
-          type="submit"
-          className="bg-gray-dark text-white uppercase w-full py-2 rounded-lg font-semibold hover:bg-gray-800 transition"
-        >
-          Register
-        </button>
-      </form>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-gray-dark text-white uppercase w-full py-2.5 rounded-lg font-semibold hover:bg-gray-800 transition cursor-pointer disabled:opacity-60 flex items-center justify-center gap-2"
+          >
+            {isSubmitting && (
+              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+            )}
+            {isSubmitting ? "Registrando..." : "Registrarse"}
+          </button>
+        </form>
+
+        <p className="text-sm text-center text-stone-gray">
+          ¿Ya tienes cuenta?{" "}
+          <a href="/login" className="text-blue-brand font-semibold hover:underline">
+            Inicia sesión
+          </a>
+        </p>
+      </motion.div>
     </div>
   );
 }
