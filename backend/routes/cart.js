@@ -8,6 +8,10 @@ router.post("/add", addToCart);
 router.get("/:id_usuario", async (req, res) => {
   const { id_usuario } = req.params;
 
+  if (!Number.isInteger(Number(id_usuario)) || Number(id_usuario) < 1) {
+    return res.status(400).json({ message: "ID de usuario inválido" });
+  }
+
   try {
     const [rows] = await pool.query(
       `SELECT CP.id_producto, P.nombre_producto, P.descripcion, P.precio, 
@@ -27,6 +31,15 @@ router.get("/:id_usuario", async (req, res) => {
 
 router.delete("/:id_usuario/:id_producto", async (req, res) => {
   const { id_usuario, id_producto } = req.params;
+
+  if (
+    !Number.isInteger(Number(id_usuario)) ||
+    Number(id_usuario) < 1 ||
+    !Number.isInteger(Number(id_producto)) ||
+    Number(id_producto) < 1
+  ) {
+    return res.status(400).json({ message: "Datos de carrito inválidos" });
+  }
 
   try {
     // Obtener el carrito activo del usuario
