@@ -5,7 +5,7 @@ import OrderDetails from "../components/OrderDetails";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useUserCart } from "../hooks/useUserCart";
-import { apiUrl } from "../utils/api";
+import { apiUrl, getAuthHeaders } from "../utils/api";
 
 function Checkout() {
   const user = useAuthStore((state) => state.user);
@@ -20,7 +20,7 @@ function Checkout() {
     reset,
   } = useForm();
 
-  const onSubmit = handleSubmit(async () => {
+  const onSubmit = handleSubmit(async (data) => {
     if (cartItems.length === 0) {
       setSubmitError("Agrega productos al carrito antes de finalizar tu pedido.");
       return;
@@ -33,10 +33,15 @@ function Checkout() {
 
       const res = await fetch(`${apiUrl}/api/orders/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...getAuthHeaders() },
         body: JSON.stringify({
-          id_usuario: user.id_usuario,
           entrega_estimada: entregaEstimada.toISOString().split("T")[0],
+          shipping_address: {
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            address: data.address,
+          },
         }),
       });
 

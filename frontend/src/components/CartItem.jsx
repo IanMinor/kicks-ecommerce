@@ -1,8 +1,16 @@
 import { Trash2, Heart } from "lucide-react";
 
-function CartItem({ item, removeFromCart }) {
+function CartItem({ item, removeFromCart, updateQuantity }) {
   const handleRemove = () => {
     removeFromCart(item.id_producto);
+  };
+
+  const handleDecrease = () => {
+    if (item.cantidad > 1) updateQuantity(item.id_producto, item.cantidad - 1);
+  };
+
+  const handleIncrease = () => {
+    updateQuantity(item.id_producto, item.cantidad + 1);
   };
 
   return (
@@ -25,7 +33,25 @@ function CartItem({ item, removeFromCart }) {
             </p>
             <div className="flex gap-4 mt-2 text-gray-dark text-sm">
               <p>Size {item.talla}</p>
-              <p>Quantity: {item.cantidad}</p>
+              <div className="flex items-center gap-2">
+                <span>Quantity:</span>
+                <button
+                  type="button"
+                  onClick={handleDecrease}
+                  disabled={item.cantidad <= 1}
+                  className="w-7 h-7 rounded border disabled:opacity-40"
+                >
+                  -
+                </button>
+                <span>{item.cantidad}</span>
+                <button
+                  type="button"
+                  onClick={handleIncrease}
+                  className="w-7 h-7 rounded border"
+                >
+                  +
+                </button>
+              </div>
             </div>
           </div>
         </div>

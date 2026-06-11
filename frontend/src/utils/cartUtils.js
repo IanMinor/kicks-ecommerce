@@ -1,8 +1,10 @@
-import { apiUrl } from "./api";
+import { apiUrl, getAuthHeaders } from "./api";
 
 export const fetchCartTotal = async (id_usuario) => {
   try {
-    const res = await fetch(`${apiUrl}/api/cart/${id_usuario}`);
+    const res = await fetch(`${apiUrl}/api/cart/${id_usuario}`, {
+      headers: getAuthHeaders(),
+    });
     if (!res.ok) throw new Error("Error al obtener el carrito");
 
     const data = await res.json();

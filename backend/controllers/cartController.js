@@ -1,11 +1,10 @@
 const pool = require("../db/config");
 
 const addToCart = async (req, res) => {
-  const { id_usuario, id_producto, cantidad } = req.body;
+  const { id_producto, cantidad } = req.body;
+  const id_usuario = req.user.id_usuario;
 
   if (
-    !Number.isInteger(Number(id_usuario)) ||
-    Number(id_usuario) < 1 ||
     !Number.isInteger(Number(id_producto)) ||
     Number(id_producto) < 1 ||
     !Number.isInteger(Number(cantidad)) ||
@@ -18,7 +17,7 @@ const addToCart = async (req, res) => {
     // Buscar carrito activo
     const [carrito] = await pool.query(
       "SELECT id_carrito FROM carritos WHERE id_usuario = ? AND estado_carrito = 1",
-      [id_usuario]
+      [Number(id_usuario)]
     );
 
     let id_carrito;
@@ -27,7 +26,7 @@ const addToCart = async (req, res) => {
       // Crear carrito nuevo
       const [result] = await pool.query(
         "INSERT INTO carritos (id_usuario, estado_carrito) VALUES (?, 1)",
-        [id_usuario]
+        [Number(id_usuario)]
       );
       id_carrito = result.insertId;
     } else {

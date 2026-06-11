@@ -1,5 +1,6 @@
 const pool = require("../db/config");
 const bcrypt = require("bcrypt");
+const { createToken } = require("../utils/token");
 const saltRounds = 10;
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -59,12 +60,14 @@ const registerUser = async (req, res) => {
       ]
     );
 
-    return res.status(201).json({
+    const user = {
       id_usuario: result.insertId,
       nombre: nombre.trim(),
       apellido: apellido.trim(),
       email: email.trim().toLowerCase(),
-    });
+    };
+
+    return res.status(201).json({ ...user, token: createToken(user) });
   } catch (error) {
     console.error("Error en el registro:", error);
     return res.status(500).json({ message: "Error interno del servidor" });
@@ -99,12 +102,14 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Credenciales incorrectas" });
     }
 
-    return res.status(200).json({
+    const user = {
       id_usuario: usuario.id_usuario,
       nombre: usuario.nombre,
       apellido: usuario.apellido,
       email: usuario.email,
-    });
+    };
+
+    return res.status(200).json({ ...user, token: createToken(user) });
   } catch (error) {
     console.error("Error en el login:", error);
     return res.status(500).json({ message: "Error interno del servidor" });

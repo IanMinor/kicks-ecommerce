@@ -1,16 +1,24 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../db/config");
+const { requireAuth } = require("../middleware/auth");
+
+router.use(requireAuth);
 
 router.post("/create", async (req, res) => {
-  const { id_usuario, entrega_estimada } = req.body;
-
-  if (!Number.isInteger(Number(id_usuario)) || Number(id_usuario) < 1) {
-    return res.status(400).json({ message: "ID de usuario inválido" });
-  }
+  const { entrega_estimada, shipping_address } = req.body;
+  const id_usuario = req.user.id_usuario;
 
   if (!entrega_estimada || Number.isNaN(Date.parse(entrega_estimada))) {
     return res.status(400).json({ message: "Fecha de entrega inválida" });
+  }
+
+  if (
+    shipping_address &&
+    (typeof shipping_address.address !== "string" ||
+      shipping_address.address.trim().length < 5)
+  ) {
+    return res.status(400).json({ message: "Dirección de envío inválida" });
   }
 
   try {
@@ -25,6 +33,21 @@ router.post("/create", async (req, res) => {
 
     if (cartRows.length === 0) {
       return res.status(400).json({ message: "No hay productos en el carrito" });
+    }
+
+    if (shipping_address) {
+      await pool.query(
+        `INSERT INTO direcciones (id_usuario, pais, estado, codigo_postal, ciudad, domicilio)
+         VALUES (?, ?, ?, ?, ?, ?)`,
+        [
+          id_usuario,
+          shipping_address.country || "",
+          shipping_address.state || "",
+          shipping_address.zipCode || "",
+          shipping_address.city || "",
+          shipping_address.address.trim(),
+        ]
+      );
     }
 
     const [rows] = await pool.query("CALL sp_CrearPedido(?, ?)", [
@@ -43,14 +66,10 @@ router.post("/create", async (req, res) => {
 
 router.get("/:id_pedido", async (req, res) => {
   const { id_pedido } = req.params;
-  const { id_usuario } = req.query;
+  const id_usuario = req.user.id_usuario;
 
   if (!Number.isInteger(Number(id_pedido)) || Number(id_pedido) < 1) {
     return res.status(400).json({ message: "ID de pedido inválido" });
-  }
-
-  if (!Number.isInteger(Number(id_usuario)) || Number(id_usuario) < 1) {
-    return res.status(400).json({ message: "ID de usuario inválido" });
   }
 
   try {

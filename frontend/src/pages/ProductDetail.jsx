@@ -1,16 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
-import { useCartStore } from "../store/cartStore";
 import { useState } from "react";
 import { useProductById } from "../hooks/useProductById";
 import AddToCartModal from "../components/AddToCartModal";
-import { apiUrl } from "../utils/api";
+import { apiUrl, getAuthHeaders } from "../utils/api";
 
 function ProductDetail() {
   const { id } = useParams();
   const { product, loading, error } = useProductById(id);
   const { user } = useAuthStore();
-  const addToCart = useCartStore((state) => state.addToCart);
   const navigate = useNavigate();
 
   const [selectedSize, setSelectedSize] = useState(null);
@@ -24,23 +22,11 @@ function ProductDetail() {
       </p>
     );
 
-  const getCartItem = () => ({
-    id: product.id_producto,
-    name: product.nombre_producto,
-    price: product.precio,
-    image: product.imagen,
-    size: selectedSize,
-    color: product.color,
-    description: product.descripcion,
-    quantity: 1,
-  });
-
   const addProductToServerCart = async () => {
     const res = await fetch(`${apiUrl}/api/cart/add`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...getAuthHeaders() },
       body: JSON.stringify({
-        id_usuario: user.id_usuario,
         id_producto: product.id_producto,
         cantidad: 1,
       }),
@@ -56,7 +42,6 @@ function ProductDetail() {
       await addProductToServerCart();
       setShowModal(true);
       setTimeout(() => setShowModal(false), 2000);
-      addToCart(user.email, getCartItem());
     } catch (err) {
       console.error("Error al agregar al carrito:", err);
     }
@@ -68,7 +53,6 @@ function ProductDetail() {
 
     try {
       await addProductToServerCart();
-      addToCart(user.email, getCartItem());
       navigate("/checkout");
     } catch (err) {
       console.error("Error al comprar ahora:", err);

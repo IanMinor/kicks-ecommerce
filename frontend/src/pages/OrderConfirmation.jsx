@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/authStore";
-import { apiUrl } from "../utils/api";
+import { apiUrl, getAuthHeaders } from "../utils/api";
 
 function OrderConfirmation() {
   const navigate = useNavigate();
@@ -20,7 +20,8 @@ function OrderConfirmation() {
 
       try {
         const res = await fetch(
-          `${apiUrl}/api/orders/${id_pedido}?id_usuario=${user.id_usuario}`
+          `${apiUrl}/api/orders/${id_pedido}`,
+          { headers: getAuthHeaders() }
         );
 
         if (!res.ok) throw new Error("No se pudo cargar el pedido");

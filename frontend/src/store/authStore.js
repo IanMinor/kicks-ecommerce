@@ -12,6 +12,13 @@ export const useAuthStore = create((set) => ({
   },
   initialize: () => {
     const stored = localStorage.getItem("user");
-    if (stored) set({ user: JSON.parse(stored) });
+    if (!stored) return;
+
+    try {
+      set({ user: JSON.parse(stored) });
+    } catch {
+      localStorage.removeItem("user");
+      set({ user: null });
+    }
   },
 }));
