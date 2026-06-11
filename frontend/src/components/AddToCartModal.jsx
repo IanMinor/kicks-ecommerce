@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function AddToCartModal({ isOpen, onClose }) {
+export default function AddToCartModal({ isOpen }) {
   return (
     <AnimatePresence>
       {isOpen && (

@@ -35,9 +35,7 @@ function ProductDetail() {
     quantity: 1,
   });
 
-  const handleAddToCart = async () => {
-  if (!user) return navigate("/login");
-  try {
+  const addProductToServerCart = async () => {
     const res = await fetch(`${apiUrl}/api/cart/add`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -47,20 +45,34 @@ function ProductDetail() {
         cantidad: 1,
       }),
     });
-      if (res.ok) {
-        setShowModal(true);
-        setTimeout(() => setShowModal(false), 2000);
-        addToCart(user.email, getCartItem());
-      }
+
+    if (!res.ok) throw new Error("No se pudo agregar el producto al carrito");
+  };
+
+  const handleAddToCart = async () => {
+    if (!user) return navigate("/login");
+
+    try {
+      await addProductToServerCart();
+      setShowModal(true);
+      setTimeout(() => setShowModal(false), 2000);
+      addToCart(user.email, getCartItem());
     } catch (err) {
       console.error("Error al agregar al carrito:", err);
     }
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
+    if (!user) return navigate("/login");
     if (!selectedSize) return;
-    addToCart(user.email, getCartItem());
-    navigate("/checkout");
+
+    try {
+      await addProductToServerCart();
+      addToCart(user.email, getCartItem());
+      navigate("/checkout");
+    } catch (err) {
+      console.error("Error al comprar ahora:", err);
+    }
   };
 
   return (

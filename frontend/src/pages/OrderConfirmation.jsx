@@ -1,9 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
-import OrderDetails from "../components/OrderDetails";
-import { useCartStore } from "../store/cartStore";
 
 function OrderConfirmation() {
-  const { clearCart } = useCartStore();
   const navigate = useNavigate();
   const { id_pedido } = useParams();
 

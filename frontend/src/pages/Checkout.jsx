@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import ErrorMessage from "../components/ErrorMessage";
 import OrderDetails from "../components/OrderDetails";
 import { useNavigate } from "react-router-dom";
@@ -8,20 +9,25 @@ import { apiUrl } from "../utils/api";
 
 function Checkout() {
   const user = useAuthStore((state) => state.user);
-  const { cartItems } = useUserCart(user);
+  const { cartItems, loading } = useUserCart(user);
   const navigate = useNavigate();
+  const [submitError, setSubmitError] = useState(null);
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    watch,
-    setValue,
+    formState: { errors, isSubmitting },
     reset,
   } = useForm();
 
-  const onSubmit = handleSubmit(async (data) => {
+  const onSubmit = handleSubmit(async () => {
+    if (cartItems.length === 0) {
+      setSubmitError("Agrega productos al carrito antes de finalizar tu pedido.");
+      return;
+    }
+
     try {
+      setSubmitError(null);
       const entregaEstimada = new Date();
       entregaEstimada.setDate(entregaEstimada.getDate() + 5);
 
@@ -45,9 +51,17 @@ function Checkout() {
       navigate(`/order-confirmation/${result.id_pedido}`);
     } catch (error) {
       console.error(error);
-      alert("Hubo un problema al procesar tu pedido.");
+      setSubmitError("Hubo un problema al procesar tu pedido. Intenta de nuevo.");
     }
   });
+
+  if (loading) {
+    return (
+      <p className="text-gray-500 flex justify-center items-center min-h-[40vh] text-xl font-semibold w-full">
+        Cargando checkout...
+      </p>
+    );
+  }
 
   return (
     <main className="font-rubik flex gap-5 items-start  justify-around p-6 mx-auto w-[90%] mt-8">
@@ -160,11 +174,12 @@ function Checkout() {
 
         <button
           type="submit"
+          disabled={isSubmitting || cartItems.length === 0}
           className="bg-gray-dark rounded-[8px] text-white text-[14px] py-2 px-4 cursor-pointer"
         >
-          REVIEW AND PAY
+          {isSubmitting ? "PROCESSING..." : "REVIEW AND PAY"}
         </button>
-        {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
+        {submitError && <ErrorMessage message={submitError} />}
       </form>
 
       <section className=" ">

@@ -30,7 +30,7 @@ function Login() {
       } else {
         setError("root", { message: result.message });
       }
-    } catch (err) {
+    } catch {
       setError("root", { message: "Error de conexión" });
     }
   };
@@ -75,7 +75,7 @@ function Login() {
             })}
             type="password"
             className={`w-full px-4 py-2 rounded-lg  focus:outline-none ${
-              errors.password
+              errors.contraseña
                 ? "ring-2 ring-red-500"
                 : "focus:ring-2 focus:ring-blue-500"
             }`}
