@@ -33,9 +33,21 @@ router.get("/", async (req, res) => {
     params.push(...size);
   }
 
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 9;
+  const offset = (page - 1) * limit;
+
   try {
+    const countQuery = query.replace("SELECT *", "SELECT COUNT(*) AS total");
+    const [[{ total }]] = await pool.query(countQuery, params);
+
+    query += ` LIMIT ? OFFSET ?`;
+    params.push(limit, offset);
+
     const [rows] = await pool.query(query, params);
-    res.status(200).json(rows);
+    const totalPages = Math.ceil(total / limit);
+
+    res.status(200).json({ products: rows, totalPages });
   } catch (error) {
     console.error("Error al obtener productos filtrados:", error);
     res.status(500).json({ message: "No se pudieron obtener los productos", error: error.message, db: {
