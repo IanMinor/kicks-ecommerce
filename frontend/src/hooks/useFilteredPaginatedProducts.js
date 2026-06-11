@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useFilterStore } from "../store/useFilterStore";
+import { apiUrl } from "../utils/api";
 
 export function useFilteredPaginatedProducts(page = 1, limit = 9) {
   const { filters } = useFilterStore();
@@ -34,7 +35,7 @@ export function useFilteredPaginatedProducts(page = 1, limit = 9) {
 
       try {
         const query = buildQuery();
-        const res = await fetch(`http://localhost:3001/api/products?${query}`);
+        const res = await fetch(`${apiUrl}/api/products?${query}`);
         const data = await res.json();
 
         setProducts(data.products || []);

@@ -11,7 +11,7 @@ const app = express();
 
 const corsOptions = {
   // Se modifico
-  origin: ['https://emmit.castelancarpinteyro.com', 'http://emmit.castelancarpinteyro.com'],
+  origin: ['https://emmit.castelancarpinteyro.com', 'http://emmit.castelancarpinteyro.com', 'http://localhost:5173'],
   optionsSuccessStatus: 200,
   credentials: true //No estaba
 };
