@@ -36,6 +36,8 @@ export function useFilteredPaginatedProducts(page = 1, limit = 9) {
       try {
         const query = buildQuery();
         const res = await fetch(`${apiUrl}/api/products?${query}`);
+        if (!res.ok) throw new Error("Error al obtener productos");
+
         const data = await res.json();
 
         setProducts(data.products || []);
