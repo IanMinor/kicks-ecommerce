@@ -10,10 +10,13 @@ const orderRoutes = require("./routes/orders");
 const app = express();
 
 const corsOptions = {
-  // Se modifico
-  origin: ['https://emmit.castelancarpinteyro.com', 'http://emmit.castelancarpinteyro.com', 'http://localhost:5173'],
+  origin: [
+    "https://emmit.castelancarpinteyro.com",
+    "http://emmit.castelancarpinteyro.com",
+    "http://localhost:5173",
+  ],
   optionsSuccessStatus: 200,
-  credentials: true //No estaba
+  credentials: true,
 };
 app.use(cors(corsOptions));
 
@@ -25,8 +28,7 @@ app.use("/api", authRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 
-// Conexión a la base de datos
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor corriendo en el puerto ${PORT}`);
 });

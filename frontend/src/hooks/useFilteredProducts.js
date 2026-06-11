@@ -28,8 +28,9 @@ export function useFilteredProducts() {
         const query = buildQuery();
         const res = await fetch(`${apiUrl}/api/products?${query}`);
         if (!res.ok) throw new Error("Error al cargar productos");
+
         const data = await res.json();
-        setProducts(data);
+        setProducts(data.products || []);
       } catch (err) {
         setError(err.message);
       } finally {

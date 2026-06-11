@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { apiUrl } from "../utils/api";
+import { apiUrl, getAuthHeaders } from "../utils/api";
 
 export function useUserCart(user) {
   const [cartItems, setCartItems] = useState([]);
@@ -12,10 +12,10 @@ export function useUserCart(user) {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(
-          `${apiUrl}/api/cart/${user.id_usuario}`
-        );
-        if (!res.ok) throw new Error("Error fetching cart");
+        const res = await fetch(`${apiUrl}/api/cart/${user.id_usuario}`, {
+          headers: getAuthHeaders(),
+        });
+        if (!res.ok) throw new Error("Error al obtener el carrito");
         const data = await res.json();
         setCartItems(data);
       } catch (err) {

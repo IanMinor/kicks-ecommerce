@@ -1,36 +1,47 @@
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import ErrorMessage from "../components/ErrorMessage";
 import OrderDetails from "../components/OrderDetails";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useUserCart } from "../hooks/useUserCart";
-import { apiUrl } from "../utils/api";
+import { apiUrl, getAuthHeaders } from "../utils/api";
 
 function Checkout() {
   const user = useAuthStore((state) => state.user);
-  const { cartItems } = useUserCart(user);
+  const { cartItems, loading } = useUserCart(user);
   const navigate = useNavigate();
+  const [submitError, setSubmitError] = useState(null);
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    watch,
-    setValue,
+    formState: { errors, isSubmitting },
     reset,
   } = useForm();
 
   const onSubmit = handleSubmit(async (data) => {
+    if (cartItems.length === 0) {
+      setSubmitError("Agrega productos al carrito antes de finalizar tu pedido.");
+      return;
+    }
+
     try {
+      setSubmitError(null);
       const entregaEstimada = new Date();
       entregaEstimada.setDate(entregaEstimada.getDate() + 5);
 
       const res = await fetch(`${apiUrl}/api/orders/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...getAuthHeaders() },
         body: JSON.stringify({
-          id_usuario: user.id_usuario,
           entrega_estimada: entregaEstimada.toISOString().split("T")[0],
+          shipping_address: {
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            address: data.address,
+          },
         }),
       });
 
@@ -45,9 +56,17 @@ function Checkout() {
       navigate(`/order-confirmation/${result.id_pedido}`);
     } catch (error) {
       console.error(error);
-      alert("Hubo un problema al procesar tu pedido.");
+      setSubmitError("Hubo un problema al procesar tu pedido. Intenta de nuevo.");
     }
   });
+
+  if (loading) {
+    return (
+      <p className="text-gray-500 flex justify-center items-center min-h-[40vh] text-xl font-semibold w-full">
+        Cargando checkout...
+      </p>
+    );
+  }
 
   return (
     <main className="font-rubik flex gap-5 items-start  justify-around p-6 mx-auto w-[90%] mt-8">
@@ -160,11 +179,12 @@ function Checkout() {
 
         <button
           type="submit"
+          disabled={isSubmitting || cartItems.length === 0}
           className="bg-gray-dark rounded-[8px] text-white text-[14px] py-2 px-4 cursor-pointer"
         >
-          REVIEW AND PAY
+          {isSubmitting ? "PROCESSING..." : "REVIEW AND PAY"}
         </button>
-        {/* <pre>{JSON.stringify(watch(), null, 2)}</pre> */}
+        {submitError && <ErrorMessage message={submitError} />}
       </form>
 
       <section className=" ">

@@ -8,7 +8,22 @@ router.get("/", async (req, res) => {
     return Array.isArray(param) ? param : [param];
   }
 
-  const minPrice = parseFloat(req.query.minPrice) || 0;
+  const minPrice = req.query.minPrice ? Number(req.query.minPrice) : 0;
+  const page = req.query.page ? Number(req.query.page) : 1;
+  const limit = req.query.limit ? Number(req.query.limit) : 9;
+
+  if (
+    !Number.isFinite(minPrice) ||
+    minPrice < 0 ||
+    !Number.isInteger(page) ||
+    page < 1 ||
+    !Number.isInteger(limit) ||
+    limit < 1 ||
+    limit > 100
+  ) {
+    return res.status(400).json({ message: "Parámetros de búsqueda inválidos" });
+  }
+
   const gender = normalizeParam(req.query.gender);
   const size = normalizeParam(req.query.size);
   const color = normalizeParam(req.query.color);
@@ -33,8 +48,6 @@ router.get("/", async (req, res) => {
     params.push(...size);
   }
 
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 9;
   const offset = (page - 1) * limit;
 
   try {
@@ -50,19 +63,20 @@ router.get("/", async (req, res) => {
     res.status(200).json({ products: rows, totalPages });
   } catch (error) {
     console.error("Error al obtener productos filtrados:", error);
-    res.status(500).json({ message: "No se pudieron obtener los productos", error: error.message, db: {
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      database: process.env.DB_DATABASE,
-      port: process.env.DB_PORT
-    }});
+    res.status(500).json({ message: "No se pudieron obtener los productos" });
   }
 });
 
 // Obtener un solo producto por ID
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
-  try {    const [rows] = await pool.query(
+
+  if (!Number.isInteger(Number(id)) || Number(id) < 1) {
+    return res.status(400).json({ message: "ID de producto inválido" });
+  }
+
+  try {
+    const [rows] = await pool.query(
       "SELECT * FROM productos WHERE id_producto = ?",
       [id]
     );
@@ -79,7 +93,8 @@ router.get("/:id", async (req, res) => {
 });
 
 // Obtener filtros únicos desde Productos
-router.get("/filters/options", async (req, res) => {  try {
+router.get("/filters/options", async (req, res) => {
+  try {
     const [categories] = await pool.query(
       "SELECT DISTINCT categoria FROM productos"
     );

@@ -16,10 +16,6 @@ function ProductFilters({ onApply, onReset }) {
     toggleFilterValue("gender", e.target.value.toLowerCase());
   };
 
-  const handleChangeCategory = (e) => {
-    toggleFilterValue("category", e.target.value);
-  };
-
   // Botón de reset: limpia todos los filtros
   const handleReset = () => {
     updateFilter("minPrice", 0);
@@ -90,7 +86,7 @@ function ProductFilters({ onApply, onReset }) {
               id={category}
               value={category || ""}
               checked={filters.category.includes(category)}
-              onChange={(e) => toggleFilterValue("category", category)}
+              onChange={() => toggleFilterValue("category", category)}
             />
             <label htmlFor={category}>{category}</label>
           </div>

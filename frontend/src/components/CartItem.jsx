@@ -1,19 +1,23 @@
 import { Trash2, Heart } from "lucide-react";
-import { useProducts } from "../hooks/useProducts";
 
-function CartItem({ item, removeFromCart }) {
+function CartItem({ item, removeFromCart, updateQuantity }) {
   const handleRemove = () => {
     removeFromCart(item.id_producto);
   };
 
-  const { products } = useProducts();
-  const product = products.find((p) => p.id_producto === item.id_producto);
+  const handleDecrease = () => {
+    if (item.cantidad > 1) updateQuantity(item.id_producto, item.cantidad - 1);
+  };
+
+  const handleIncrease = () => {
+    updateQuantity(item.id_producto, item.cantidad + 1);
+  };
 
   return (
     <article className="flex flex-col sm:flex-row w-full font-rubik border-gray-200 rounded-lg p-4 mt-4 gap-4 sm:gap-6 bg-white shadow">
       <figure className="w-full sm:w-[180px] h-[180px] sm:h-[180px] rounded-[24px] overflow-hidden shadow-lg flex items-center justify-center flex-shrink-0 mb-4 sm:mb-0">
         <img
-          src={product?.imagen || item.imagen}
+          src={item.imagen}
           alt={item.descripcion}
           className="w-full h-full object-contain"
         />
@@ -29,7 +33,25 @@ function CartItem({ item, removeFromCart }) {
             </p>
             <div className="flex gap-4 mt-2 text-gray-dark text-sm">
               <p>Size {item.talla}</p>
-              <p>Quantity: {item.cantidad}</p>
+              <div className="flex items-center gap-2">
+                <span>Quantity:</span>
+                <button
+                  type="button"
+                  onClick={handleDecrease}
+                  disabled={item.cantidad <= 1}
+                  className="w-7 h-7 rounded border disabled:opacity-40"
+                >
+                  -
+                </button>
+                <span>{item.cantidad}</span>
+                <button
+                  type="button"
+                  onClick={handleIncrease}
+                  className="w-7 h-7 rounded border"
+                >
+                  +
+                </button>
+              </div>
             </div>
           </div>
         </div>

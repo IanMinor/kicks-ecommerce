@@ -1,15 +1,43 @@
 const pool = require("../db/config");
 const bcrypt = require("bcrypt");
-const saltRounds = 10; // Número de rondas de hashing (mayor = más seguro, pero más lento)
+const { createToken } = require("../utils/token");
+const saltRounds = 10;
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function isNonEmptyString(value) {
+  return typeof value === "string" && value.trim().length > 0;
+}
 
 const registerUser = async (req, res) => {
   const { nombre, apellido, numero_telefono, email, contraseña } = req.body;
 
+  if (
+    !isNonEmptyString(nombre) ||
+    !isNonEmptyString(apellido) ||
+    !isNonEmptyString(numero_telefono) ||
+    !isNonEmptyString(email) ||
+    !isNonEmptyString(contraseña)
+  ) {
+    return res.status(400).json({ message: "Todos los campos son obligatorios" });
+  }
+
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: "Correo inválido" });
+  }
+
+  if (!/^\d{10}$/.test(numero_telefono)) {
+    return res.status(400).json({ message: "El teléfono debe tener 10 dígitos" });
+  }
+
+  if (contraseña.length < 4) {
+    return res.status(400).json({ message: "La contraseña debe tener al menos 4 caracteres" });
+  }
+
   try {
-    // Verificar si el email ya existe
     const [existing] = await pool.query(
-      "SELECT * FROM usuarios WHERE email = ?",
-      [email]
+      "SELECT id_usuario FROM usuarios WHERE email = ?",
+      [email.trim().toLowerCase()]
     );
 
     if (existing.length > 0) {
@@ -18,16 +46,28 @@ const registerUser = async (req, res) => {
         .json({ message: "Este correo ya está registrado, intenta con otro." });
     }
 
-    // Hash de la contraseña antes de guardarla
     const hashedPassword = await bcrypt.hash(contraseña, saltRounds);
 
-    await pool.query(
+    const [result] = await pool.query(
       `INSERT INTO usuarios (nombre, apellido, numero_telefono, email, contraseña)
        VALUES (?, ?, ?, ?, ?)`,
-      [nombre, apellido, numero_telefono, email, hashedPassword] // Guardamos el hash, no la contraseña en texto plano
+      [
+        nombre.trim(),
+        apellido.trim(),
+        numero_telefono.trim(),
+        email.trim().toLowerCase(),
+        hashedPassword,
+      ]
     );
 
-    return res.status(201).json({ message: "Usuario registrado con éxito." });
+    const user = {
+      id_usuario: result.insertId,
+      nombre: nombre.trim(),
+      apellido: apellido.trim(),
+      email: email.trim().toLowerCase(),
+    };
+
+    return res.status(201).json({ ...user, token: createToken(user) });
   } catch (error) {
     console.error("Error en el registro:", error);
     return res.status(500).json({ message: "Error interno del servidor" });
@@ -37,11 +77,18 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   const { email, contraseña } = req.body;
 
+  if (!isNonEmptyString(email) || !isNonEmptyString(contraseña)) {
+    return res.status(400).json({ message: "Email y contraseña son obligatorios" });
+  }
+
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: "Correo inválido" });
+  }
+
   try {
-    // Buscar usuario por email
     const [rows] = await pool.query(
       "SELECT * FROM usuarios WHERE email = ?",
-      [email]
+      [email.trim().toLowerCase()]
     );
 
     if (rows.length === 0) {
@@ -49,21 +96,20 @@ const loginUser = async (req, res) => {
     }
 
     const usuario = rows[0];
-    
-    // Comparar contraseña ingresada con el hash almacenado
     const match = await bcrypt.compare(contraseña, usuario.contraseña);
 
     if (!match) {
       return res.status(401).json({ message: "Credenciales incorrectas" });
     }
 
-    // Si coincide, devolver datos del usuario (sin contraseña)
-    return res.status(200).json({
+    const user = {
       id_usuario: usuario.id_usuario,
       nombre: usuario.nombre,
       apellido: usuario.apellido,
       email: usuario.email,
-    });
+    };
+
+    return res.status(200).json({ ...user, token: createToken(user) });
   } catch (error) {
     console.error("Error en el login:", error);
     return res.status(500).json({ message: "Error interno del servidor" });

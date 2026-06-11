@@ -2,7 +2,7 @@ import { useAuthStore } from "../store/authStore";
 import { useUserCart } from "../hooks/useUserCart";
 import CartItem from "../components/CartItem";
 import OrderSummary from "../components/OrderSummary";
-import { apiUrl } from "../utils/api"; // <-- Agrega esta línea
+import { apiUrl, getAuthHeaders } from "../utils/api";
 
 function Cart() {
   const user = useAuthStore((state) => state.user);
@@ -16,6 +16,7 @@ function Cart() {
         `${apiUrl}/api/cart/${user.id_usuario}/${id_producto}`,
         {
           method: "DELETE",
+          headers: getAuthHeaders(),
         }
       );
 
@@ -29,6 +30,31 @@ function Cart() {
       }
     } catch (error) {
       console.error("Error al eliminar producto del carrito:", error);
+    }
+  };
+
+  const handleUpdateQuantity = async (id_producto, cantidad) => {
+    if (!user) return;
+
+    try {
+      const res = await fetch(
+        `${apiUrl}/api/cart/${user.id_usuario}/${id_producto}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", ...getAuthHeaders() },
+          body: JSON.stringify({ cantidad }),
+        }
+      );
+
+      if (!res.ok) throw new Error("No se pudo actualizar la cantidad");
+
+      setCartItems((prev) =>
+        prev.map((item) =>
+          item.id_producto === id_producto ? { ...item, cantidad } : item
+        )
+      );
+    } catch (error) {
+      console.error("Error al actualizar cantidad:", error);
     }
   };
 
@@ -56,6 +82,7 @@ function Cart() {
                 }-${idx}`}
                 item={item}
                 removeFromCart={handleRemove}
+                updateQuantity={handleUpdateQuantity}
               />
             ))}
           </div>

@@ -12,7 +12,6 @@ function Register() {
     handleSubmit,
     watch,
     formState: { errors },
-    reset,
     setError,
   } = useForm();
 
@@ -34,7 +33,7 @@ function Register() {
       } else {
         setError("root", { message: result.message });
       }
-    } catch (err) {
+    } catch {
       setError("root", { message: "Error de conexión al servidor" });
     }
   };
@@ -96,7 +95,7 @@ function Register() {
               },
             })}
             className={`w-full px-4 py-2 rounded-lg bg-transparent border-1 border-gray-light focus:outline-none focus:ring-2 ${
-              errors.name ? "ring-red-500" : "ring-gray-300"
+              errors.apellido ? "ring-red-500" : "ring-gray-300"
             }`}
             placeholder="Enter your last name"
           />
@@ -119,7 +118,7 @@ function Register() {
               },
             })}
             className={`w-full px-4 py-2 rounded-lg bg-transparent border-1 border-gray-light focus:outline-none focus:ring-2 ${
-              errors.name ? "ring-red-500" : "ring-gray-300"
+              errors.numero_telefono ? "ring-red-500" : "ring-gray-300"
             }`}
             placeholder="Enter your phone number"
           />
@@ -143,7 +142,7 @@ function Register() {
             })}
             type="email"
             className={`w-full px-4 py-2 rounded-lg bg-transparent border-1 border-gray-light focus:outline-none focus:ring-2 ${
-              errors.name ? "ring-red-500" : "ring-gray-300"
+              errors.email ? "ring-red-500" : "ring-gray-300"
             }`}
             placeholder="Enter your email"
           />
@@ -165,7 +164,7 @@ function Register() {
             })}
             type="password"
             className={`w-full px-4 py-2 rounded-lg bg-transparent border-1 border-gray-light focus:outline-none focus:ring-2 ${
-              errors.name ? "ring-red-500" : "ring-gray-300"
+              errors.contraseña ? "ring-red-500" : "ring-gray-300"
             }`}
             placeholder="Enter your password"
           />
@@ -187,7 +186,7 @@ function Register() {
             })}
             type="password"
             className={`w-full px-4 py-2 rounded-lg bg-transparent border-1 border-gray-light focus:outline-none focus:ring-2 ${
-              errors.name ? "ring-red-500" : "ring-gray-300"
+              errors.confirmPassword ? "ring-red-500" : "ring-gray-300"
             }`}
             placeholder="Confirm your password"
           />

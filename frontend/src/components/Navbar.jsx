@@ -2,7 +2,7 @@ import { Search, User, ShoppingCart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import DropDownMenu from "./DropDownMenu";
 import { LogoIcon } from "../assets/Icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useUserCart } from "../hooks/useUserCart";
 import { useState } from "react";
@@ -209,7 +209,6 @@ export default function Navbar() {
           </div>
         )}
       </nav>
-      {console.log(cartItems)}
     </header>
   );
 }

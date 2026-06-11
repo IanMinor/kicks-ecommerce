@@ -4,7 +4,7 @@ import { useAuthStore } from "../store/authStore";
 function ProtectedRoute({ children }) {
   const user = useAuthStore((state) => state.user);
 
-  if (!user) {
+  if (!user?.token) {
     return <Navigate to="/login" replace />;
   }
 
