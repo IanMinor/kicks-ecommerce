@@ -1,4 +1,10 @@
-import { MoveRight, RefreshCw, ShieldCheck, Sparkles, Truck } from "lucide-react";
+import {
+  MoveRight,
+  RefreshCw,
+  ShieldCheck,
+  Sparkles,
+  Truck,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import ProductCard from "../components/ProductCard";
@@ -54,7 +60,9 @@ const trustBadges = [
 function HomePage() {
   const { products, loading } = useProducts();
   const resetFilters = useFilterStore((state) => state.resetFilters);
-  const setMultipleFilters = useFilterStore((state) => state.setMultipleFilters);
+  const setMultipleFilters = useFilterStore(
+    (state) => state.setMultipleFilters,
+  );
   const featuredProducts = products.slice(0, 6);
   const carouselProducts = [...featuredProducts, ...featuredProducts];
 
@@ -96,7 +104,7 @@ function HomePage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.6 }}
           >
-            Explore the new collection of sneakers
+            Explora la nueva colección de sneakers
           </motion.p>
 
           <motion.div
@@ -109,7 +117,7 @@ function HomePage() {
               to="/products"
               className="flex justify-between items-center w-[200px] mt-6 bg-blue-brand text-white py-4 px-5 rounded-[8px] font-semibold shadow-lg hover:scale-105 hover:shadow-xl transition-transform duration-200"
             >
-              Explore
+              Explorar
               <MoveRight />
             </Link>
           </motion.div>
@@ -249,20 +257,24 @@ function HomePage() {
             const BadgeIcon = badge.icon;
 
             return (
-            <motion.article
-              key={badge.title}
-              className="bg-white rounded-2xl p-6 shadow-md border border-gray-light"
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.35 }}
-            >
-              <div className="w-12 h-12 rounded-full bg-blue-brand/10 text-blue-brand flex items-center justify-center mb-5">
-                <BadgeIcon className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-dark">{badge.title}</h3>
-              <p className="text-stone-gray mt-2 leading-relaxed">{badge.text}</p>
-            </motion.article>
+              <motion.article
+                key={badge.title}
+                className="bg-white rounded-2xl p-6 shadow-md border border-gray-light"
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.35 }}
+              >
+                <div className="w-12 h-12 rounded-full bg-blue-brand/10 text-blue-brand flex items-center justify-center mb-5">
+                  <BadgeIcon className="w-6 h-6" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-dark">
+                  {badge.title}
+                </h3>
+                <p className="text-stone-gray mt-2 leading-relaxed">
+                  {badge.text}
+                </p>
+              </motion.article>
             );
           })}
         </div>
