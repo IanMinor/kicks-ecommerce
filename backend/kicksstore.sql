@@ -159,8 +159,7 @@ CREATE TABLE `carritos_productos` (
 INSERT INTO `carritos_productos` (`id_carrito`, `id_producto`, `cantidad`) VALUES
 (4017, 2007, 2),
 (4017, 2009, 1),
-(4017, 2008, 1),
-(4017, 2005, 1);
+(4017, 2008, 1);
 
 -- --------------------------------------------------------
 
@@ -381,7 +380,6 @@ CREATE TABLE `productos` (
 --
 
 INSERT INTO `productos` (`id_producto`, `nombre_producto`, `marca`, `talla`, `color`, `precio`, `stock`, `descripcion`, `imagen`, `categoria`, `genero`) VALUES
-(2005, 'Kobe 8 Protro What The Kobe 2025', 'Nike', 42, 'Blue', 1899.99, 20, 'Tenis versátiles ideales para entrenamiento diario.', 'https://res.cloudinary.com/dv4dyxqn7/image/upload/v1748191273/ppqaq8keouxl19ezfr43.jpg', 'Basketball', 'Men'),
 (2006, 'Wmns Jordan 1 Retro High OG', 'Nike', 45, 'Blue', 1899.99, 30, 'Tenis streetwear versátiles.', 'https://res.cloudinary.com/dv4dyxqn7/image/upload/v1748191272/rr2mhyk507ih0fuwsaja.jpg', 'Sneakers', 'Women'),
 (2007, 'Nike SB x Jordan 4 Retro SP Navy', 'Nike', 32, 'White', 1899.99, 25, 'Tenis streetwear versátiles.', 'https://res.cloudinary.com/dv4dyxqn7/image/upload/v1748191273/fhriyustejnsoc8srrao.jpg', 'Sneakers', 'Women'),
 (2008, 'Travis Scott x Jordan 1 Low OG TD Velvet Brown', 'Nike', 42, 'Brown', 2899.99, 15, 'Tenis versátiles ideales para uso diario.', 'https://res.cloudinary.com/dv4dyxqn7/image/upload/v1748191272/iea0wgldz2bbhnmjlqpf.jpg', 'Casual', 'Men'),
