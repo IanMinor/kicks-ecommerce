@@ -55,7 +55,8 @@ function HomePage() {
   const { products, loading } = useProducts();
   const resetFilters = useFilterStore((state) => state.resetFilters);
   const setMultipleFilters = useFilterStore((state) => state.setMultipleFilters);
-  const featuredProducts = products.slice(0, 4);
+  const featuredProducts = products.slice(0, 6);
+  const carouselProducts = [...featuredProducts, ...featuredProducts];
 
   const handleCategoryClick = (filter) => {
     resetFilters();
@@ -167,22 +168,36 @@ function HomePage() {
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(260px,1fr))] justify-items-center gap-8">
-          {loading
-            ? Array.from({ length: 4 }).map((_, index) => (
+        <div className="relative overflow-hidden py-4">
+          <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-20 bg-gradient-to-r from-white-fa to-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-20 bg-gradient-to-l from-white-fa to-transparent" />
+
+          {loading ? (
+            <div className="flex gap-8">
+              {Array.from({ length: 4 }).map((_, index) => (
                 <ProductCardSkeleton key={index} />
-              ))
-            : featuredProducts.map((product) => (
-                <motion.div
-                  key={product.id_producto || product.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.2 }}
-                  transition={{ duration: 0.35 }}
+              ))}
+            </div>
+          ) : (
+            <motion.div
+              className="flex w-max gap-8"
+              animate={{ x: [0, -((300 + 32) * featuredProducts.length)] }}
+              transition={{
+                duration: 26,
+                ease: "linear",
+                repeat: Infinity,
+              }}
+            >
+              {carouselProducts.map((product, index) => (
+                <div
+                  key={`${product.id_producto || product.id}-${index}`}
+                  className="shrink-0"
                 >
                   <ProductCard product={product} />
-                </motion.div>
+                </div>
               ))}
+            </motion.div>
+          )}
         </div>
       </section>
 
