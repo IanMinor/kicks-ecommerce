@@ -26,6 +26,7 @@ function Cart() {
         setCartItems((prev) =>
           prev.filter((item) => item.id_producto !== id_producto)
         );
+        window.dispatchEvent(new Event("cart:updated"));
       } else {
         console.error("No se pudo eliminar el producto del carrito");
       }
@@ -54,6 +55,7 @@ function Cart() {
           item.id_producto === id_producto ? { ...item, cantidad } : item
         )
       );
+      window.dispatchEvent(new Event("cart:updated"));
     } catch (error) {
       console.error("Error al actualizar cantidad:", error);
     }

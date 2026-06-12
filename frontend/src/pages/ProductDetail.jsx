@@ -44,6 +44,7 @@ function ProductDetail() {
     });
 
     if (!res.ok) throw new Error("No se pudo agregar el producto al carrito");
+    window.dispatchEvent(new Event("cart:updated"));
   };
 
   const handleAddToCart = async () => {
