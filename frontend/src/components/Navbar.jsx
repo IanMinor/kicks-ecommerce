@@ -5,7 +5,7 @@ import { LogoIcon } from "../assets/Icons";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import { useUserCart } from "../hooks/useUserCart";
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useProducts } from "../hooks/useProducts";
 import useCartCalculations from "../hooks/useCartCalculations";
 
@@ -24,6 +24,18 @@ export default function Navbar() {
   const { totalItems, subtotal } = useCartCalculations(cartItems);
 
   const [showMiniCart, setShowMiniCart] = useState(false);
+  const miniCartTimeout = useRef(null);
+
+  const handleMouseEnter = useCallback(() => {
+    clearTimeout(miniCartTimeout.current);
+    setShowMiniCart(true);
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    miniCartTimeout.current = setTimeout(() => {
+      setShowMiniCart(false);
+    }, 200);
+  }, []);
 
   const { products } = useProducts();
 
@@ -64,10 +76,10 @@ export default function Navbar() {
             <span role="img" aria-label="fire">
               🔥
             </span>
-            New Drops
+            Nuevos lanzamientos
           </Link>
-          <DropDownMenu title="Men" />
-          <DropDownMenu title="Women" />
+          <DropDownMenu title="Hombres" />
+          <DropDownMenu title="Mujeres" />
         </div>
 
         {/* Logo centrado absoluto en móvil, relativo en desktop */}
@@ -102,7 +114,7 @@ export default function Navbar() {
                       onClick={logout}
                       className="w-full px-4 py-2 rounded hover:bg-gray-100 cursor-pointer"
                     >
-                      Logout
+                      Cerrar sesión
                     </DropdownItem>
                   </>
                 ) : (
@@ -112,14 +124,14 @@ export default function Navbar() {
                       to="/login"
                       className="w-full px-4 py-2 rounded hover:bg-gray-100 cursor-pointer"
                     >
-                      Login
+                      Iniciar sesión
                     </DropdownItem>
                     <DropdownItem
                       as={Link}
                       to="/register"
                       className="w-full px-4 py-2 rounded hover:bg-gray-100 cursor-pointer"
                     >
-                      Register
+                      Registrarse
                     </DropdownItem>
                   </>
                 )}
@@ -129,8 +141,8 @@ export default function Navbar() {
 
           <div
             className="relative font-rubik"
-            onMouseEnter={() => setShowMiniCart(true)}
-            onMouseLeave={() => setShowMiniCart(false)}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
           >
             <Link to="/cart" className="relative cursor-pointer">
               <ShoppingCart className="w-5 h-5 text-black" />
@@ -202,10 +214,10 @@ export default function Navbar() {
               <span role="img" aria-label="fire">
                 🔥
               </span>
-              New Drops
+              Nuevos lanzamientos
             </Link>
-            <DropDownMenu title="Men" onClick={() => setMenuOpen(false)} />
-            <DropDownMenu title="Women" onClick={() => setMenuOpen(false)} />
+            <DropDownMenu title="Hombres" onClick={() => setMenuOpen(false)} />
+            <DropDownMenu title="Mujeres" onClick={() => setMenuOpen(false)} />
           </div>
         )}
       </nav>

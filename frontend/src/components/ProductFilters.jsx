@@ -28,10 +28,10 @@ function ProductFilters({ onApply, onReset }) {
 
   return (
     <div className="p-4 rounded-2xl font-rubik">
-      <h2 className="text-xl font-semibold mb-4">Filters</h2>
+      <h2 className="text-xl font-semibold mb-4">Filtros</h2>
       {/* Refine By */}
       <div className="mb-8">
-        <h3 className="font-medium mb-2">REFINE BY</h3>
+        <h3 className="font-medium mb-2">FILTRAR POR</h3>
         <div className="flex gap-2">
           <span className="bg-blue-500 text-white px-2 py-1 rounded-full text-sm">
             Mens

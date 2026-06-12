@@ -20,14 +20,16 @@ function DropDownMenu({ title, onClick }) {
 
   const categories = ["Casual", "Running", "Sneakers", "Basketball"];
 
+  const genderValue = title === "Hombres" ? "men" : "women";
+
   const handleFilterClick = (category) => {
-    resetFilters(); // limpia filtros anteriores
+    resetFilters();
     setMultipleFilters({
-      gender: [title.toLowerCase()],
+      gender: [genderValue],
       category: [category],
     });
     navigate("/products");
-    if (onClick) onClick(); // para cerrar el menú en móvil
+    if (onClick) onClick();
   };
 
   return (
@@ -40,7 +42,7 @@ function DropDownMenu({ title, onClick }) {
       </DropdownTrigger>
       <DropdownMenu className="bg-white border border-gray-200 rounded-md shadow-lg px-5">
         <DropdownSection
-          title={`${title}'s Categories`}
+          title={`Categorías ${title}`}
           className="font-semibold text-gray-700 text-center"
         >
           {categories.map((category) => (

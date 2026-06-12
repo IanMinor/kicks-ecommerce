@@ -3,6 +3,7 @@ import ProductCard from "../components/ProductCard";
 import ProductFilters from "../components/ProductFilters";
 import { useFilteredPaginatedProducts } from "../hooks/useFilteredPaginatedProducts";
 import { Pagination } from "@heroui/pagination";
+import { ProductCardSkeleton } from "../components/Skeleton";
 
 function Products() {
   const [page, setPage] = useState(1);
@@ -10,14 +11,23 @@ function Products() {
 
   const { products, totalPages, loading, error } =
     useFilteredPaginatedProducts(page);
+  const isInitialLoading = loading && products.length === 0;
 
   const handleFiltersApply = () => {
     setPage(1);
     setShowFilters(false);
   };
 
-  if (loading)
-    return <p className="text-center mt-10">Cargando productos...</p>;
+  if (isInitialLoading)
+    return (
+      <div className="w-[90%] mx-auto mt-6">
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(300px,1fr))] justify-items-center mt-8 gap-6">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <ProductCardSkeleton key={i} />
+          ))}
+        </div>
+      </div>
+    );
   if (error) return <p className="text-center text-red-500 mt-10">{error}</p>;
 
   return (
@@ -68,7 +78,12 @@ function Products() {
       )}
 
       {/* Productos */}
-      <section className="w-full">
+      <section className="w-full relative">
+        {loading && (
+          <div className="absolute right-0 top-0 z-10 rounded-full bg-white px-4 py-2 text-sm font-semibold text-blue-brand shadow-md">
+            Actualizando...
+          </div>
+        )}
         {products.length === 0 ? (
           <p className="text-gray-500 flex justify-center items-center h-screen text-xl font-semibold">
             No se encontraron productos.

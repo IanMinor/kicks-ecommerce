@@ -12,3 +12,17 @@
   --color-stone-gray: #70706e;
   --color-gray-dark: #232321;
 }
+
+body {
+  background-color: #fafafa;
+  font-family: "Rubik", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a:not([class]) {
+  text-decoration: none;
+  color: inherit;
+}

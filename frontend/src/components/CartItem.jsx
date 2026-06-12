@@ -14,8 +14,8 @@ function CartItem({ item, removeFromCart, updateQuantity }) {
   };
 
   return (
-    <article className="flex flex-col sm:flex-row w-full font-rubik border-gray-200 rounded-lg p-4 mt-4 gap-4 sm:gap-6 bg-white shadow">
-      <figure className="w-full sm:w-[180px] h-[180px] sm:h-[180px] rounded-[24px] overflow-hidden shadow-lg flex items-center justify-center flex-shrink-0 mb-4 sm:mb-0">
+    <article className="flex flex-col sm:flex-row w-full font-rubik border-gray-200 rounded-xl p-4 gap-4 sm:gap-6 bg-white shadow hover:shadow-md transition-shadow duration-200">
+      <figure className="w-full sm:w-[180px] h-[180px] sm:h-[180px] rounded-2xl overflow-hidden shadow-lg flex items-center justify-center flex-shrink-0 mb-4 sm:mb-0">
         <img
           src={item.imagen}
           alt={item.descripcion}
@@ -32,22 +32,22 @@ function CartItem({ item, removeFromCart, updateQuantity }) {
               {item.descripcion}
             </p>
             <div className="flex gap-4 mt-2 text-gray-dark text-sm">
-              <p>Size {item.talla}</p>
+              <p>Talla {item.talla}</p>
               <div className="flex items-center gap-2">
-                <span>Quantity:</span>
+                <span>Cantidad:</span>
                 <button
                   type="button"
                   onClick={handleDecrease}
                   disabled={item.cantidad <= 1}
-                  className="w-7 h-7 rounded border disabled:opacity-40"
+                  className="w-7 h-7 rounded-lg border disabled:opacity-40 hover:bg-gray-100 transition cursor-pointer"
                 >
                   -
                 </button>
-                <span>{item.cantidad}</span>
+                <span className="font-medium">{item.cantidad}</span>
                 <button
                   type="button"
                   onClick={handleIncrease}
-                  className="w-7 h-7 rounded border"
+                  className="w-7 h-7 rounded-lg border hover:bg-gray-100 transition cursor-pointer"
                 >
                   +
                 </button>
@@ -59,12 +59,12 @@ function CartItem({ item, removeFromCart, updateQuantity }) {
           <span className="text-blue-brand text-xl sm:text-2xl font-semibold whitespace-nowrap">
             ${item.precio}
           </span>
-          <div className="flex gap-4">
-            <button className="mr-2">
-              <Heart className="cursor-pointer" />
+          <div className="flex gap-3">
+            <button className="text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
+              <Heart className="w-5 h-5" />
             </button>
-            <button onClick={handleRemove} className="cursor-pointer">
-              <Trash2 />
+            <button onClick={handleRemove} className="text-gray-400 hover:text-red-500 transition-colors cursor-pointer">
+              <Trash2 className="w-5 h-5" />
             </button>
           </div>
         </div>

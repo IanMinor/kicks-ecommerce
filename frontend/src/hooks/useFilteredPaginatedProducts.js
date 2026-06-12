@@ -29,13 +29,17 @@ export function useFilteredPaginatedProducts(page = 1, limit = 9) {
       return params.toString();
     };
 
+    const controller = new AbortController();
+
     const fetchData = async () => {
       setLoading(true);
       setError(null);
 
       try {
         const query = buildQuery();
-        const res = await fetch(`${apiUrl}/api/products?${query}`);
+        const res = await fetch(`${apiUrl}/api/products?${query}`, {
+          signal: controller.signal,
+        });
         if (!res.ok) throw new Error("Error al obtener productos");
 
         const data = await res.json();
@@ -43,14 +47,22 @@ export function useFilteredPaginatedProducts(page = 1, limit = 9) {
         setProducts(data.products || []);
         setTotalPages(data.totalPages || 1);
       } catch (err) {
+        if (err.name === "AbortError") return;
         console.error("Error al obtener productos:", err);
         setError("Error al obtener productos");
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
     };
 
-    fetchData();
+    const timeoutId = setTimeout(fetchData, 200);
+
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, [filters, page, limit]);
 
   return { products, totalPages, loading, error };
