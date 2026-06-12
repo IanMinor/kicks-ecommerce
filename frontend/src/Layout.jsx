@@ -16,7 +16,7 @@ function Layout() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <AnimatePresence mode="wait" initial={false}>
+      <AnimatePresence mode="wait">
         <motion.main
           key={location.pathname}
           initial={{ opacity: 0, y: 20 }}

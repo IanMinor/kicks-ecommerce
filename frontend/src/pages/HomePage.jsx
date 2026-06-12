@@ -188,7 +188,9 @@ function HomePage() {
             </div>
           ) : (
             <motion.div
+              key={featuredProducts.length}
               className="flex w-max gap-8"
+              initial={{ x: 0 }}
               animate={{ x: [0, -((300 + 32) * featuredProducts.length)] }}
               transition={{
                 duration: 26,
